@@ -88,13 +88,9 @@ function addNewCard(event) {
   const name = placeName.value;
   const link = linkInput.value;
 
-  const newCard = createCard(
-    { name, link },
-    removeCard,
-    likeCard,
-    openImagePopup
+  placeList.prepend(
+    createCard({ name, link }, removeCard, likeCard, openImagePopup)
   );
-  placeList.prepend(newCard);
 
   closeModal(event.currentTarget);
   event.target.reset();
