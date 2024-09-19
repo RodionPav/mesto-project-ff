@@ -1,10 +1,8 @@
+const cardTemplate = document.querySelector("#card-template").content;
+
 function createCard(card, deleteCard, likeCard, openImagePopup) {
-  const cardTemplate = document.querySelector("#card-template").content;
   const newCard = cardTemplate.querySelector(".places__item").cloneNode(true);
-  
-  newCard.querySelector(".card__image").src = card.link;
-  newCard.querySelector(".card__image").alt = card.name;
-  newCard.querySelector(".card__title").textContent = card.name;
+  getCardTemplate(card, newCard);
 
   const buttonDelete = newCard.querySelector(".card__delete-button");
 
@@ -19,13 +17,19 @@ function createCard(card, deleteCard, likeCard, openImagePopup) {
   });
 
   const imageOpener = newCard.querySelector(".card__image");
-  const imagePopup = document.querySelector(".popup_type_image");
 
   imageOpener.addEventListener("click", () =>
-    openImagePopup(imagePopup, card.link, card.name)
+    openImagePopup(card.link, card.name)
   );
 
   return newCard;
+}
+
+function getCardTemplate(card, newCard) {
+  const cardImage = newCard.querySelector(".card__image");
+  cardImage.src = card.link;
+  cardImage.alt = card.name;
+  newCard.querySelector(".card__title").textContent = card.name;
 }
 
 function removeCard(cardElement) {
