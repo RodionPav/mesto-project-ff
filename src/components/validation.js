@@ -75,12 +75,12 @@ const enableValidation = (validationConfig) => {
   });
 };
 
-const clearValidation = (formElement,validationConfig) => {
+const clearValidation = (formElement, validationConfig) => {
   const errorElements = Array.from(
     formElement.querySelectorAll(validationConfig.inputSelector)
   );
   errorElements.forEach((elm) => {
-    hideInputError(formElement, elm, validationConfig)
+    hideInputError(formElement, elm, validationConfig);
   });
 };
 

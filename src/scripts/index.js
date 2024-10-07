@@ -102,13 +102,11 @@ function openImagePopup(link, name) {
   popupCaption.textContent = name;
 }
 
-let handleSubmitConfirmPopup = ''
-const deleteCardPopup = document.querySelector('.popup_type_card-delete');
-const deleteCardOpener = document.querySelector('.card__delete-button')
+let handleSubmitConfirmPopup = "";
+const deleteCardPopup = document.querySelector(".popup_type_card-delete");
+const deleteCardOpener = document.querySelector(".card__delete-button");
 
-function openPopupDelete(){
-
-}
+function openPopupDelete() {}
 
 function disableButton(newCardPopup) {
   const popupButton = newCardPopup.querySelector(".popup__button");
