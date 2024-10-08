@@ -2,7 +2,7 @@ import { deleteCard, deleteLike, putLike } from "./api";
 
 const cardTemplate = document.querySelector("#card-template").content;
 
-function createCard(card, removeCard, likeCard, openImagePopup) {
+function createCard(card, removeCard, toggleLikeCard, openImagePopup, userId) {
   const newCard = cardTemplate.querySelector(".places__item").cloneNode(true);
   getCardTemplate(card, newCard);
 
@@ -10,23 +10,24 @@ function createCard(card, removeCard, likeCard, openImagePopup) {
   buttonDelete.addEventListener("click", () => {
     removeCard(card, newCard);
   });
-
-  if (card.owner._id !== "6c3b9b1e3b2e671f8f6aaa9b") {
+  if (card.owner._id !== userId) {
     buttonDelete.classList.add("card__delete-button-hidden");
   }
 
   const buttonLike = newCard.querySelector(".card__like-button");
-
+  card.likes.forEach((element) => {
+    if (element._id == userId) {
+      buttonLike.classList.toggle("card__like-button_is-active");
+    }
+  });
   buttonLike.addEventListener("click", () => {
-    likeCard(buttonLike, card, newCard);
+    toggleLikeCard(buttonLike, card, newCard);
   });
 
   const imageOpener = newCard.querySelector(".card__image");
-
   imageOpener.addEventListener("click", () =>
     openImagePopup(card.link, card.name)
   );
-
   return newCard;
 }
 
@@ -48,34 +49,32 @@ function removeCard(card, cardElement) {
     });
 }
 
-function likeCard(cardElement, card, newCard) {
+function toggleLikeCard(cardElement, card, newCard) {
   if (cardElement.classList.contains("card__like-button_is-active")) {
-    cardElement.classList.toggle("card__like-button_is-active");
-    disLikeCard(newCard, card);
-  } else {
-    cardElement.classList.toggle("card__like-button_is-active");
-    putLike(card)
+    deleteLike(card)
       .then((result) => {
-        likeCount(newCard, result);
+        newCard.querySelector(".card__like-counter").textContent =
+          result.likes.length;
       })
       .catch((err) => {
         console.log(err);
+      })
+      .finally(() => {
+        cardElement.classList.toggle("card__like-button_is-active");
+      });
+  } else {
+    putLike(card)
+      .then((result) => {
+        newCard.querySelector(".card__like-counter").textContent =
+          result.likes.length;
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => {
+        cardElement.classList.toggle("card__like-button_is-active");
       });
   }
 }
 
-function likeCount(newCard, card) {
-  newCard.querySelector(".card__like-counter").textContent = card.likes.length;
-}
-
-function disLikeCard(newCard, card) {
-  deleteLike(card)
-    .then((result) => {
-      likeCount(newCard, result);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-}
-
-export { createCard, removeCard, likeCard };
+export { createCard, removeCard, toggleLikeCard };

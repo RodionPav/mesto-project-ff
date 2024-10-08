@@ -1,3 +1,5 @@
+import { checkResponse } from "../utils/checkResponse";
+
 const config = {
   baseUrl: "https://nomoreparties.co/v1/wff-cohort-24",
   headers: {
@@ -6,63 +8,45 @@ const config = {
   },
 };
 
+function request(endpoint, options) {
+  return fetch(`${config.baseUrl}${endpoint}`, options).then(checkResponse);
+}
+
 const promise1 = new Promise((resolve, reject) => {
-  fetch(`${config.baseUrl}/users/me`, {
+  request(`/users/me`, {
     headers: config.headers,
-  })
-    .then((res) => {
-      if (res.ok) {
-        return res.json();
-      }
-      return Promise.reject(`Ошибка: ${res.status}`);
-    })
-    .then((result) => {
-      resolve(result);
-    });
+  }).then((result) => {
+    resolve(result);
+  });
 });
 
 const promise2 = new Promise((resolve, reject) => {
-  fetch(`${config.baseUrl}/cards`, {
+  request(`/cards`, {
     headers: config.headers,
-  })
-    .then((res) => {
-      if (res.ok) {
-        return res.json();
-      }
-      return Promise.reject(`Ошибка: ${res.status}`);
-    })
-    .then((result) => {
-      resolve(result);
-    });
+  }).then((result) => {
+    resolve(result);
+  });
 });
 
-export const getInitialData = (profileEdit, initialCards) => {
-  Promise.all([promise1, promise2])
-    .then(([response1, response2]) => {
-      profileEdit(response1);
-      initialCards(response2);
-    })
-    .catch((err) => {
-      console.error(err);
-    });
+export const getInitialData = (editProfile, initCards, userId) => {
+  Promise.all([promise1, promise2]).then(([response1, response2]) => {
+    editProfile(response1);
+    initCards(response2);
+  });
 };
 
-export const patchAvatar = async (avatar) => {
-  const res = await fetch(`${config.baseUrl}/users/me/avatar`, {
+export const patchAvatar = (avatar) => {
+  return request(`/users/me/avatar`, {
     method: "PATCH",
     headers: config.headers,
     body: JSON.stringify({
       avatar,
     }),
   });
-  if (res.ok) {
-    return res.json();
-  }
-  return await Promise.reject(`Ошибка: ${res.status}`);
 };
 
-export const patchEditProfile = async (name, about) => {
-  const res = await fetch(`${config.baseUrl}/users/me`, {
+export const patchEditProfile = (name, about) => {
+  return request(`/users/me`, {
     method: "PATCH",
     headers: config.headers,
     body: JSON.stringify({
@@ -70,14 +54,10 @@ export const patchEditProfile = async (name, about) => {
       about,
     }),
   });
-  if (res.ok) {
-    return res.json();
-  }
-  return await Promise.reject(`Ошибка: ${res.status}`);
 };
 
-export const postNewCard = async (name, link) => {
-  const res = await fetch(`${config.baseUrl}/cards`, {
+export const postNewCard = (name, link) => {
+  return request(`/cards`, {
     method: "POST",
     headers: config.headers,
     body: JSON.stringify({
@@ -85,41 +65,25 @@ export const postNewCard = async (name, link) => {
       link,
     }),
   });
-  if (res.ok) {
-    return res.json();
-  }
-  return await Promise.reject(`Ошибка: ${res.status}`);
 };
 
-export const deleteCard = async (cardId) => {
-  const res = await fetch(`${config.baseUrl}/cards/${cardId}`, {
+export const deleteCard = (cardId) => {
+  return request(`/cards/${cardId}`, {
     method: "DELETE",
     headers: config.headers,
   });
-  if (res.ok) {
-    return res.json();
-  }
-  return await Promise.reject(`Ошибка: ${res.status}`);
 };
 
-export const putLike = async (card) => {
-  const res = await fetch(`${config.baseUrl}/cards/likes/${card._id}`, {
+export const putLike = (card) => {
+  return request(`/cards/likes/${card._id}`, {
     method: "PUT",
     headers: config.headers,
   });
-  if (res.ok) {
-    return res.json();
-  }
-  return await Promise.reject(`Ошибка: ${res.status}`);
 };
 
-export const deleteLike = async (card) => {
-  const res = await fetch(`${config.baseUrl}/cards/likes/${card._id}`, {
+export const deleteLike = (card) => {
+  return request(`/cards/likes/${card._id}`, {
     method: "DELETE",
     headers: config.headers,
   });
-  if (res.ok) {
-    return res.json();
-  }
-  return await Promise.reject(`Ошибка: ${res.status}`);
 };

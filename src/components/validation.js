@@ -84,4 +84,10 @@ const clearValidation = (formElement, validationConfig) => {
   });
 };
 
-export { enableValidation, clearValidation };
+const disableButton = (newCardPopup) => {
+  const popupButton = newCardPopup.querySelector(".popup__button");
+  popupButton.disabled = true;
+  popupButton.classList.add("popup__button_disabled");
+};
+
+export { enableValidation, clearValidation, disableButton };
