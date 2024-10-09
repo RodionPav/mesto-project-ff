@@ -55,24 +55,20 @@ function toggleLikeCard(cardElement, card, newCard) {
       .then((result) => {
         newCard.querySelector(".card__like-counter").textContent =
           result.likes.length;
+        cardElement.classList.toggle("card__like-button_is-active");
       })
       .catch((err) => {
         console.log(err);
-      })
-      .finally(() => {
-        cardElement.classList.toggle("card__like-button_is-active");
       });
   } else {
     putLike(card)
       .then((result) => {
         newCard.querySelector(".card__like-counter").textContent =
           result.likes.length;
+        cardElement.classList.toggle("card__like-button_is-active");
       })
       .catch((err) => {
         console.log(err);
-      })
-      .finally(() => {
-        cardElement.classList.toggle("card__like-button_is-active");
       });
   }
 }
